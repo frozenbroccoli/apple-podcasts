@@ -7,6 +7,12 @@
 ```commandline
 git clone https://github.com/frozenbroccoli/apple-podcasts.git
 ```
+
+### Install the requirements
+
+```commandline
+pip install -r requirements.txt
+```
 ### Go to the `apple` directory
 
 ```commandline
