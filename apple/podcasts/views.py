@@ -3,7 +3,7 @@ from django.views.generic import TemplateView
 
 
 class PodcastSearchView(TemplateView):
-    template_name = 'podcast/search.html'
+    template_name = 'podcasts/search.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
