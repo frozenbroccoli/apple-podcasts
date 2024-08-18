@@ -1,17 +1,42 @@
-<form method="get" action="{% url 'search_podcasts' %}">
+<form method="get" action="{% url 'search-podcasts' %}">
     <input type="text" name="query" placeholder="Search for podcasts">
     <button type="submit">Search</button>
 </form>
 
 {% if response.results %}
     <div>
-        {% for response in response.results %}
+        {% for result in response.results %}
             <div class="podcast">
                 <img src="{{ result.artworkUrl100 }}" alt="{{ result.collectionName }}">
                 <h3><a href="{{ result.collectionViewUrl }}">{{ result.collectionName }}</a></h3>
                 <p>Artist: <a href="{{ result.artistViewUrl }}">{{ result.artistName }}</a></p>
                 <p>Genre: {{ result.primaryGenreName }}</p>
                 <p>Release Date: {{ result.releaseDate }}</p>
+
+                <!-- Play button or link -->
+                <button onclick="playPodcast('{{ result.trackId }}')">Play Podcast</button>
+
+                <!-- Placeholder for iframe -->
+                <div id="player-{{ result.trackId }}" style="display: none;">
+                    <iframe allow="autoplay *; encrypted-media *" frameborder="0" height="450" width="100%"
+                            style="max-width:660px;overflow:hidden;border-radius:10px;"
+                            sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-top-navigation-by-user-activation"></iframe>
+                </div>
             </div>
         {% endfor %}
     </div>
+{% endif %}
+
+<script>
+function playPodcast(trackId) {
+    // Find the relevant iframe container based on podcast trackId
+    const iframeContainer = document.querySelector(`#player-${trackId}`);
+    const iframe = iframeContainer.querySelector('iframe');
+
+    // Set the iframe source to a placeholder URL since feedUrl cannot be used directly
+    iframe.src = `https://embed.podcasts.apple.com/us/podcast/${trackId}`;
+
+    // Display the iframe container
+    iframeContainer.style.display = 'block';
+}
+</script>
