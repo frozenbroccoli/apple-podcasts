@@ -25,8 +25,6 @@ class PodcastEpisodesView(TemplateView):
         query = self.request.GET.get('query', '')
         url = f'https://itunes.apple.com/lookup?id={collection_id}&media=podcast&entity=podcastEpisode&limit=100'
         response = requests.get(url)
-        with open('response.json', 'w') as file:
-            file.write(json.dumps(response.json(), indent=4))
         episodes = response.json().get('results', [])
         if query:
             filtered_episodes = [
