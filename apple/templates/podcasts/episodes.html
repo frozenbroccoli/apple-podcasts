@@ -1,0 +1,39 @@
+<form method="get" action="{% url 'episodes' collection_id=collection_id %}">
+    <input type="text" name="query" placeholder="Search for episodes">
+    <button type="submit">Search</button>
+</form>
+
+{% if episodes %}
+    <div>
+        {% for episode in episodes %}
+            <div class="episode">
+                <h4>{{ episode.trackName }}</h4>
+                <p>Release Date: {{ episode.releaseDate }}</p>
+
+                {% if episode.kind == "podcast-episode" %}
+                    <!-- Play button -->
+                    <button onclick="playEpisode('{{ collection_id }}', '{{ episode.trackId }}')">Play Episode</button>
+
+                    <!-- Placeholder for iframe -->
+                    <div id="player-{{ episode.trackId }}" style="display: none;">
+                        <iframe allow="autoplay *; encrypted-media *" frameborder="0" height="450" width="100%"
+                                style="max-width:660px;overflow:hidden;border-radius:10px;"
+                                sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-top-navigation-by-user-activation"></iframe>
+                    </div>
+                {% endif %}
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
+
+<script>
+function playEpisode(collectionId, trackId) {
+    const iframeContainer = document.querySelector(`#player-${trackId}`);
+    const iframe = iframeContainer.querySelector('iframe');
+
+    // Construct the episode-specific URL
+    iframe.src = `https://embed.podcasts.apple.com/us/podcast/${collectionId}?i=${trackId}`;
+
+    iframeContainer.style.display = 'block';
+}
+</script>
