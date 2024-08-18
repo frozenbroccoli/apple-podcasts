@@ -23,12 +23,17 @@ class PodcastEpisodesView(TemplateView):
         context = super().get_context_data(**kwargs)
         collection_id = kwargs.get('collection_id')
         query = self.request.GET.get('query', '')
+        url = f'https://itunes.apple.com/lookup?id={collection_id}&media=podcast&entity=podcastEpisode&limit=100'
+        response = requests.get(url)
+        with open('response.json', 'w') as file:
+            file.write(json.dumps(response.json(), indent=4))
+        episodes = response.json().get('results', [])
         if query:
-            url = f'https://itunes.apple.com/lookup?id={collection_id}&entity=podcastEpisode&term={query}'
-            response = requests.get(url)
-            with open('response.json', 'w') as file:
-                file.write(json.dumps(response.json(), indent=4))
-            context['episodes'] = response.json().get('results', [])
-            context['collection_id'] = collection_id
+            filtered_episodes = [
+                episode for episode in episodes if query.lower() in episode.get('trackName', '').lower()]
+            context['episodes'] = filtered_episodes
+        else:
+            context['episodes'] = episodes
+        context['collection_id'] = collection_id
         return context
 
