@@ -4,6 +4,9 @@
 </form>
 
 {% if episodes %}
+    {% if request.GET.query %}
+        <h2>Search Results for "{{ request.GET.query }}"</h2>
+    {% endif %}
     <div>
         {% for episode in episodes %}
             <div class="episode">
@@ -24,6 +27,8 @@
             </div>
         {% endfor %}
     </div>
+{% else %}
+    <p>No results found for "{{ request.GET.query }}"</p>
 {% endif %}
 
 <script>
