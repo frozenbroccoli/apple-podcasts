@@ -4,7 +4,9 @@
 </form>
 
 {% if response.results %}
-    <h2>Search Results for "{{ request.GET.query }}"</h2>
+    {% if request.GET.query %}
+        <h2>Search Results for "{{ request.GET.query }}"</h2>
+    {% endif %}
     <div>
         {% for result in response.results %}
             <div class="podcast">
@@ -27,7 +29,9 @@
         {% endfor %}
     </div>
 {% else %}
-    <p>No results found for "{{ request.GET.query }}"</p>
+    {% if request.GET.query %}
+        <p>No results found for "{{ request.GET.query }}"</p>
+    {% endif %}
 {% endif %}
 
 <script>
