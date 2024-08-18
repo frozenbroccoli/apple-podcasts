@@ -8,7 +8,7 @@
         {% for result in response.results %}
             <div class="podcast">
                 <img src="{{ result.artworkUrl100 }}" alt="{{ result.collectionName }}">
-                <h3><a href="{{ result.collectionViewUrl }}">{{ result.collectionName }}</a></h3>
+                <h3><a href="{% url 'episodes' collection_id=result.collectionId %}">{{ result.collectionName }}</a></h3>
                 <p>Artist: <a href="{{ result.artistViewUrl }}">{{ result.artistName }}</a></p>
                 <p>Genre: {{ result.primaryGenreName }}</p>
                 <p>Release Date: {{ result.releaseDate }}</p>
@@ -29,14 +29,11 @@
 
 <script>
 function playPodcast(trackId) {
-    // Find the relevant iframe container based on podcast trackId
     const iframeContainer = document.querySelector(`#player-${trackId}`);
     const iframe = iframeContainer.querySelector('iframe');
 
-    // Set the iframe source to a placeholder URL since feedUrl cannot be used directly
     iframe.src = `https://embed.podcasts.apple.com/us/podcast/${trackId}`;
 
-    // Display the iframe container
     iframeContainer.style.display = 'block';
 }
 </script>
