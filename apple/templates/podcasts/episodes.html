@@ -1,44 +1,141 @@
-<form method="get" action="{% url 'episodes' collection_id=collection_id %}">
-    <input type="text" name="query" placeholder="Search for episodes">
-    <button type="submit">Search</button>
-</form>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Podcast Episodes</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            width: 80%;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        h2 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .search-form {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        .search-form input {
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            width: 300px;
+        }
+        .search-form button {
+            padding: 10px 20px;
+            font-size: 16px;
+            color: #fff;
+            background-color: #007bff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+        .search-form button:hover {
+            background-color: #0056b3;
+        }
+        .episode {
+            border-bottom: 1px solid #eee;
+            padding: 10px 0;
+            margin-bottom: 10px;
+        }
+        .episode h4 {
+            margin: 0;
+            color: #007bff;
+        }
+        .episode p {
+            margin: 5px 0;
+            color: #555;
+        }
+        .play-button {
+            padding: 10px 20px;
+            font-size: 14px;
+            color: #fff;
+            background-color: #28a745;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .play-button:hover {
+            background-color: #218838;
+        }
+        .no-results {
+            text-align: center;
+            color: #666;
+            margin-top: 20px;
+        }
+        .player {
+            margin-top: 10px;
+        }
+        .player iframe {
+            width: 100%;
+            height: 150px; /* Adjusted height to half of 300px */
+            border-radius: 10px;
+            border: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <form method="get" action="{% url 'episodes' collection_id=collection_id %}" class="search-form">
+            <input type="text" name="query" placeholder="Search for episodes">
+            <button type="submit">Search</button>
+        </form>
 
-{% if episodes %}
-    {% if request.GET.query %}
-        <h2>Search Results for "{{ request.GET.query }}"</h2>
-    {% endif %}
-    <div>
-        {% for episode in episodes %}
-            <div class="episode">
-                <h4>{{ episode.trackName }}</h4>
-                <p>Release Date: {{ episode.releaseDate }}</p>
+        {% if episodes %}
+            {% if request.GET.query %}
+                <h2>Search Results for "{{ request.GET.query }}"</h2>
+            {% endif %}
+            <div>
+                {% for episode in episodes %}
+                    <div class="episode">
+                        <h4>{{ episode.trackName }}</h4>
+                        <p>Release Date: {{ episode.releaseDate }}</p>
 
-                {% if episode.kind == "podcast-episode" %}
-                    <!-- Play button -->
-                    <button onclick="playEpisode('{{ collection_id }}', '{{ episode.trackId }}')">Play Episode</button>
+                        {% if episode.kind == "podcast-episode" %}
+                            <!-- Play button -->
+                            <button class="play-button" onclick="playEpisode('{{ collection_id }}', '{{ episode.trackId }}')">Play Episode</button>
 
-                    <!-- Placeholder for iframe -->
-                    <div id="player-{{ episode.trackId }}" style="display: none;">
-                        <iframe allow="autoplay *; encrypted-media *" frameborder="0" height="450" width="100%"
-                                style="max-width:660px;overflow:hidden;border-radius:10px;"
-                                sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-top-navigation-by-user-activation"></iframe>
+                            <!-- Placeholder for iframe -->
+                            <div id="player-{{ episode.trackId }}" class="player" style="display: none;">
+                                <iframe allow="autoplay *; encrypted-media *"
+                                        sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-top-navigation-by-user-activation">
+                                </iframe>
+                            </div>
+                        {% endif %}
                     </div>
-                {% endif %}
+                {% endfor %}
             </div>
-        {% endfor %}
+        {% else %}
+            <p class="no-results">No results found for "{{ request.GET.query }}"</p>
+        {% endif %}
     </div>
-{% else %}
-    <p>No results found for "{{ request.GET.query }}"</p>
-{% endif %}
 
-<script>
-function playEpisode(collectionId, trackId) {
-    const iframeContainer = document.querySelector(`#player-${trackId}`);
-    const iframe = iframeContainer.querySelector('iframe');
+    <script>
+    function playEpisode(collectionId, trackId) {
+        const iframeContainer = document.querySelector(`#player-${trackId}`);
+        const iframe = iframeContainer.querySelector('iframe');
 
-    // Construct the episode-specific URL
-    iframe.src = `https://embed.podcasts.apple.com/us/podcast/${collectionId}?i=${trackId}`;
+        // Construct the episode-specific URL
+        iframe.src = `https://embed.podcasts.apple.com/us/podcast/${collectionId}?i=${trackId}`;
 
-    iframeContainer.style.display = 'block';
-}
-</script>
+        iframeContainer.style.display = 'block';
+    }
+    </script>
+</body>
+</html>
