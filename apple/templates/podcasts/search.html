@@ -1,0 +1,17 @@
+<form method="get" action="{% url 'search_podcasts' %}">
+    <input type="text" name="query" placeholder="Search for podcasts">
+    <button type="submit">Search</button>
+</form>
+
+{% if response.results %}
+    <div>
+        {% for response in response.results %}
+            <div class="podcast">
+                <img src="{{ result.artworkUrl100 }}" alt="{{ result.collectionName }}">
+                <h3><a href="{{ result.collectionViewUrl }}">{{ result.collectionName }}</a></h3>
+                <p>Artist: <a href="{{ result.artistViewUrl }}">{{ result.artistName }}</a></p>
+                <p>Genre: {{ result.primaryGenreName }}</p>
+                <p>Release Date: {{ result.releaseDate }}</p>
+            </div>
+        {% endfor %}
+    </div>
